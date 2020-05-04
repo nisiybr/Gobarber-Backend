@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
 import { getCustomRepository } from 'typeorm';
 import { parseISO } from 'date-fns';
 
@@ -6,6 +6,11 @@ import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import CreateAppointmentService from '../services/CreateAppointmentService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
+interface RequestProps extends Request {
+  io: SocketIOStatic;
+  connectedUsers: {};
+}
 
 /**
  * Parepositories/AppointmentsRepository um timestamp em date
@@ -24,7 +29,7 @@ appointmentsRouter.get('/', async (request, response) => {
   return response.json(appointments);
 });
 
-appointmentsRouter.post('/', async (request, response) => {
+appointmentsRouter.post('/', async (request: RequestProps, response) => {
   const { provider_id, date } = request.body;
 
   const parsedDate = parseISO(date);
@@ -35,6 +40,11 @@ appointmentsRouter.post('/', async (request, response) => {
     date: parsedDate,
     provider_id,
   });
+  const ownerSocket = request.connectedUsers[provider_id];
+  console.log(ownerSocket);
+  if (ownerSocket) {
+    request.io.to(ownerSocket).emit('appointment', appointment);
+  }
 
   return response.json(appointment);
 });
