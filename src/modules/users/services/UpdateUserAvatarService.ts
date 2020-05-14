@@ -5,6 +5,7 @@ import uploadConfig from '@config/upload';
 
 import User from '@modules/users/infra/typeorm/entities/Users';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 import AppError from '@shared/errors/AppError';
 
@@ -19,6 +20,9 @@ class UpdateUserAvatarService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('DiskStorageProvider')
+    private diskStorageProvider: IStorageProvider,
   ) {}
 
   public async execute({
@@ -32,17 +36,12 @@ class UpdateUserAvatarService {
     }
 
     if (user.avatar) {
-      // Se ja tem avatar, deletar o anterior
-      const userAvataFilePath = path.join(uploadConfig.directory, user.avatar);
-      // Stats traz as informações do arquivo, se ele existir
-      const userAvatarExists = await fs.promises.stat(userAvataFilePath);
-      // Se o arquivo existe
-      if (userAvatarExists) {
-        fs.promises.unlink(userAvataFilePath);
-      }
+      await this.diskStorageProvider.deleteFile(user.avatar);
     }
 
-    user.avatar = avatarFilename;
+    const filename = await this.diskStorageProvider.saveFile(avatarFilename);
+
+    user.avatar = filename;
 
     await this.usersRepository.save(user);
 
