@@ -1,4 +1,3 @@
-// import AppError from '@shared/errors/AppError';
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
 import ShowProfileService from '@modules/users/services/ShowProfileService';
 import AppError from '@shared/errors/AppError';
