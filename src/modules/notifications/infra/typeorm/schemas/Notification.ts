@@ -4,8 +4,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ObjectIdColumn,
+  Entity,
 } from 'typeorm';
 
+@Entity('notifications')
 class Notification {
   @ObjectIdColumn()
   id: ObjectID;
