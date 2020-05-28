@@ -1,8 +1,11 @@
+import 'reflect-metadata';
+import 'dotenv/config';
+
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import 'express-async-errors';
+import { errors } from 'celebrate';
 
-import 'reflect-metadata';
 import '@shared/infra/typeorm';
 import AppError from '@shared/errors/AppError';
 import uploadConfig from '@config/upload';
@@ -15,6 +18,9 @@ app.use(cors());
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(routes);
+
+app.use(errors());
+
 // middleware de erro tem 4 parametros
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   // Erro conhecido, gerado pelo AppError, ou seja, gerado pela minha aplicação
