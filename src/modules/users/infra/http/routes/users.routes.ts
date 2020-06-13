@@ -9,7 +9,7 @@ import UsersController from '@modules/users/infra/http/controllers/UsersControll
 import UserAvatarController from '@modules/users/infra/http/controllers/UserAvatarController';
 
 const usersRouter = Router();
-const upload = multer(uploadConfig);
+const upload = multer(uploadConfig.multer);
 /**
  * O upload é passado como um middleware, e o parametro passado é o nome do campo que será utilizado
  * upload.single: Upload de um unico arquivo
