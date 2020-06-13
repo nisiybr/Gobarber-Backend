@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.6",
+    "@types/ioredis": "^4.16.4",
     "@types/jest": "^25.2.1",
     "@types/mongodb": "^3.5.18",
     "@types/multer": "^1.4.3",
